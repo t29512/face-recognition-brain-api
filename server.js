@@ -1,112 +1,40 @@
 import express from 'express';
-import bcrypt, { hash } from 'bcrypt';
+import bcrypt from 'bcrypt';
 import cors from 'cors';
+import knex from 'knex';
 
-const saltRounds = 10;
-const myPlaintextPassword = 's0//P4$$w0rD';
-const someOtherPlaintextPassword = 'not_bacon';
+import handleRegister from './controller/register.js';
+import handleSignin from './controller/signin.js';
+import handleProfileGet from './controller/profile.js';
+import { handleImage, handleAPI } from './controller/image.js';
+
+const db = knex({
+  client: 'pg',
+  connection: {
+    host: '127.0.0.1',
+    port: 5432,
+    user: 'postgres',
+    password: 't29512',
+    database: 'face-recognition-brain',
+  },
+});
+
 const app = express();
-const port = 3000;
-
-// 'entries' means photo submission count
-const database = {
-  users: [
-    {
-      id: '1',
-      name: 'VK',
-      email: 't29512@msn.com',
-      password: 't7929512',
-      entries: 0,
-      joinTime: new Date(),
-    },
-    {
-      id: '2',
-      name: 'Syvi',
-      email: 't7929512@gmail.com',
-      password: 'loveavril',
-      entries: 0,
-      joinTime: new Date(),
-    },
-  ],
-};
+const port = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(cors());
 
 app.get('/', (req, res) => {
-  res.send(database.users);
+  res.send('Home');
 });
-
-app.post('/register', (req, res) => {
-  const { name, email, password } = req.body;
-  bcrypt.hash(password, saltRounds, function (err, hash) {
-    console.log(hash);
-  });
-  database.users.push({
-    id: `${database.users.length + 1}`,
-    name: name,
-    email: email,
-    password: password,
-    entries: 0,
-    joinTime: new Date(),
-  });
-  res.json(database.users[database.users.length - 1]);
-});
-
-app.post('/signin', (req, res) => {
-  bcrypt.compare(
-    req.body.password,
-    '$2b$10$60jiXfRK7x91XTpmKij.P.Nazm04CaPVNP18Xg68H6EnT/dkYpywi',
-    function (err, result) {
-      console.log('t7929', result);
-    }
-  );
-  bcrypt.compare(
-    someOtherPlaintextPassword,
-    '$2b$10$60jiXfRK7x91XTpmKij.P.Nazm04CaPVNP18Xg68H6EnT/dkYpywi',
-    function (err, result) {
-      console.log(someOtherPlaintextPassword, result);
-    }
-  );
-  if (
-    req.body.email === database.users[0].email &&
-    req.body.password === database.users[0].password
-  ) {
-    res.json(database.users[0]);
-  } else {
-    res.status(400).json('Fail to login');
-  }
-});
-
-app.get('/profile/:id', (req, res) => {
-  const { id } = req.params;
-  let found = false;
-  database.users.forEach((user) => {
-    if (user.id === id) {
-      found = true;
-      return res.json(user);
-    }
-  });
-  if (!found) {
-    res.status(404).json('Not found');
-  }
-});
-
-app.put('/image', (req, res) => {
-  const { id } = req.body;
-  let found = false;
-  database.users.forEach((user) => {
-    if (user.id === id) {
-      found = true;
-      user.entries++;
-      return res.json(user.entries);
-    }
-  });
-  if (!found) {
-    res.status(404).json('Not found');
-  }
-});
+//Have to pass req, res, db & bcrypt to the function (function curried so db & bcrypt only)
+app.post('/register', handleRegister(db, bcrypt));
+app.post('/signin', handleSignin(db, bcrypt));
+app.get('/profile/:id', handleProfileGet(db));
+app.put('/image', handleImage(db));
+app.post('/imageurl', (req, res) => handleAPI(req, res));
 
 app.listen(port, () => {
-  console.log('app is running on on port ' + port);
+  console.log('App is running on on port ' + port);
 });
