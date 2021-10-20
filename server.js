@@ -2,20 +2,19 @@ import express from 'express';
 import bcrypt from 'bcrypt';
 import cors from 'cors';
 import knex from 'knex';
+import { parse } from 'pg-connection-string';
 
 import handleRegister from './controller/register.js';
 import handleSignin from './controller/signin.js';
 import handleProfileGet from './controller/profile.js';
 import { handleImage, handleAPI } from './controller/image.js';
 
+const pgconfig = parse(process.env.DATABASE_URL);
+pgconfig.ssl = { rejectUnauthorized: false };
+
 const db = knex({
   client: 'pg',
-  connection: {
-    connectionString: process.env.DATABASE_URL,
-    ssl: {
-      rejectUnauthorized: false,
-    },
-  },
+  connection: pgconfig,
 });
 
 const app = express();
