@@ -2,7 +2,7 @@ import express from 'express';
 import bcrypt from 'bcrypt';
 import cors from 'cors';
 import knex from 'knex';
-import { parse } from 'pg-connection-string';
+import parse from 'pg-connection-string';
 
 import handleRegister from './controller/register.js';
 import handleSignin from './controller/signin.js';
