@@ -8,12 +8,16 @@ import handleSignin from './controller/signin.js';
 import handleProfileGet from './controller/profile.js';
 import { handleImage, handleAPI } from './controller/image.js';
 
+//Login postgres in bash: psql -U postgres
 const db = knex({
-  host: '127.0.0.1',
-  port: 5432,
-  user: 'postgres',
-  password: 't29512',
-  database: 'face-recognition-brain',
+  client: 'pg',
+  connection: {
+    host: '127.0.0.1',
+    port: 5432,
+    user: 'postgres',
+    password: 't29512',
+    database: 'face-recognition-brain',
+  },
 });
 
 const app = express();
