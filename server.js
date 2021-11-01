@@ -12,11 +12,10 @@ import { handleImage, handleAPI } from './controller/image.js';
 const db = knex({
   client: 'pg',
   connection: {
-    host: '127.0.0.1',
-    port: 5432,
-    user: 'postgres',
-    password: 't29512',
-    database: 'face-recognition-brain',
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+      rejectUnauthorized: false,
+    },
   },
 });
 
