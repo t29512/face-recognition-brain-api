@@ -10,7 +10,7 @@ import handleProfileGet from './controller/profile.js';
 import { handleImage, handleAPI } from './controller/image.js';
 
 const pgconfig = parse(process.env.DATABASE_URL);
-pgconfig.ssl = { rejectUnauthorized: true };
+pgconfig.ssl = { rejectUnauthorized: false };
 
 const db = knex({
   client: 'pg',
@@ -24,7 +24,7 @@ app.use(express.json());
 app.use(cors());
 
 app.get('/', (req, res) => {
-  res.send('Home');
+  res.send(pgconfig);
 });
 //Have to pass req, res, db & bcrypt to the function (function curried so db & bcrypt only)
 app.post('/register', handleRegister(db, bcrypt));
