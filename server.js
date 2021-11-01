@@ -10,7 +10,7 @@ import handleProfileGet from './controller/profile.js';
 import { handleImage, handleAPI } from './controller/image.js';
 
 const pgconfig = parse(process.env.DATABASE_URL);
-pgconfig.ssl = { rejectUnauthorized: false };
+pgconfig.ssl = { rejectUnauthorized: true };
 
 const db = knex({
   client: 'pg',
