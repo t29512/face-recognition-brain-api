@@ -11,6 +11,7 @@ import { handleImage, handleAPI } from './controller/image.js';
 
 const pgconfig = parse(process.env.DATABASE_URL);
 pgconfig.ssl = { rejectUnauthorized: false };
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 const db = knex({
   client: 'pg',
