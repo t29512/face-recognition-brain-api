@@ -2,19 +2,18 @@ import express from 'express';
 import bcrypt from 'bcrypt';
 import cors from 'cors';
 import knex from 'knex';
-import parse from 'pg-connection-string';
 
 import handleRegister from './controller/register.js';
 import handleSignin from './controller/signin.js';
 import handleProfileGet from './controller/profile.js';
 import { handleImage, handleAPI } from './controller/image.js';
 
-const pgconfig = parse(process.env.DATABASE_URL);
-pgconfig.ssl = { rejectUnauthorized: false };
-
 const db = knex({
-  client: 'pg',
-  connection: pgconfig,
+  host: '127.0.0.1',
+  port: 5432,
+  user: 'postgres',
+  password: 't29512',
+  database: 'face-recognition-brain',
 });
 
 const app = express();
