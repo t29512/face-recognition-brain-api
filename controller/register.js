@@ -26,7 +26,7 @@ const handleRegister = (db, bcrypt) => (req, res) => {
             .insert({
               name: name,
               email: loginEmail[0],
-              joinTime: new Date(),
+              joined: new Date(),
             })
             //Return all columns of this registered user
             .returning('*')
